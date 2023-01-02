@@ -10,6 +10,7 @@ dotenv.config();
 
 mongoose.connect(process.env.MONGO_URI);
 
+const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -59,6 +60,6 @@ app.post('/login', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
