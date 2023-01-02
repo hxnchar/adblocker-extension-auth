@@ -23,7 +23,8 @@ app.post('/register', async (req, res) => {
   });
   try {
     await user.save();
-    return res.status(200).send('User created successfully');
+    const token = jwt.sign({ id: user._id }, 'secretkey');
+    return res.send({ token });
   } catch (e) {
     return res.status(500).send(e.message);
   }
@@ -37,17 +38,17 @@ app.post('/login', async (req, res) => {
     }
     bcrypt.compare(req.body.password, user.password, (error, result) => {
       if (error) {
-        res.status(500).send(error);
-      } else if (!result) {
-        res.status(401).send('Email or password are incorrect');
-      } else {
-        const token = jwt.sign({ id: user._id }, 'secretkey');
-
-        res.send({ token });
+        return res.status(500).send(error);
       }
+      if (!result) {
+        return res.status(401).send('Email or password are incorrect');
+      }
+
+      const token = jwt.sign({ id: user._id }, 'secretkey');
+      return res.send({ token });
     });
   } catch (e) {
-    res.status(500).send(error);
+    return res.status(500).send(error);
   }
 });
 
