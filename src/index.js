@@ -17,7 +17,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use((req, res, next) => {
   const path = req.url;
-  console.log(path);
   if (path === '/register' || path === '/login') {
      return next();
   }
@@ -41,9 +40,8 @@ app.post('/register', async (req, res) => {
     password: hashedPassword,
   });
   try {
-    const tokens = await genTokenPair(user);
     await user.save();
-    return res.send();
+    return res.send(await genTokenPair(user));
   } catch (e) {
     return res.status(500).send(e.message);
   }
