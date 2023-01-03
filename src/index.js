@@ -22,18 +22,14 @@ app.use((req, res, next) => {
      return next();
   }
   const token = req.headers['x-access-token'];
-  // Check if the token is present
   if (!token) {
     return res.status(401).send('Access token required');
   }
-  // Verify the token
   jwt.verify(token, 'secretkey', (error, decoded) => {
     if (error) {
       return res.status(401).send('Invalid access token');
     }
-    // Set the user ID in the request object
     req.userId = decoded.id;
-    // Call the next middleware function
     next();
   });
 });
@@ -86,7 +82,6 @@ app.get('/refresh-token', async (req, res) => {
 });
 
 app.get('/protected', (req, res) => {
-  // The user ID is available on the request object
   User.findById(req.userId, (error, user) => {
     if (error) {
       res.status(500).send(error);
